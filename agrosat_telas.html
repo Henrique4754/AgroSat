@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1440"/>
+<title>AgroSat — Protótipo de Telas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0D1117; --surface:#161B22; --surface2:#1C2128; --surface3:#21262D;
+  --border:#30363D; --border2:#3D444D;
+  --green:#4ADE80; --amber:#F59E0B; --red:#F87171; --info:#60A5FA;
+  --text:#E6EDF3; --muted:#8B949E; --dim:#6E7681;
+  --disp:'Syne',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#06080C;color:var(--text);font-family:var(--mono);-webkit-font-smoothing:antialiased;padding:48px;display:flex;flex-direction:column;gap:64px;align-items:center}
+.frame-label{font-family:var(--mono);color:var(--dim);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.frame-label::before{content:"";width:24px;height:1px;background:var(--green)}
+
+/* shell */
+.frame{width:1440px;height:900px;background:var(--bg);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:flex;box-shadow:0 40px 120px -40px #000}
+
+/* rail */
+.rail{width:96px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:24px 0;gap:34px;flex-shrink:0}
+.brand{display:flex;flex-direction:column;align-items:center;gap:8px}
+.brand-mark{width:44px;height:44px;border-radius:13px;background:linear-gradient(145deg,#16331f,#0d1f14);border:1px solid #234a30;display:flex;align-items:center;justify-content:center;color:var(--green)}
+.brand-mark svg{width:24px;height:24px}
+.brand-name{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--muted)}
+.brand-name b{color:var(--text);font-weight:800}
+.rail-nav{display:flex;flex-direction:column;gap:8px;width:100%;align-items:center;flex:1}
+.rail-item{width:64px;padding:10px 0;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--dim);cursor:pointer;border:1px solid transparent}
+.rail-item svg{width:22px;height:22px}
+.rail-lbl{font-size:9px;letter-spacing:.5px;text-transform:uppercase}
+.rail-item.active{background:var(--surface3);border-color:var(--border2);color:var(--green)}
+.rail-item:hover{color:var(--text)}
+.rail-foot{margin-top:auto}
+.rail-status{font-size:9px;color:var(--dim);text-align:center;line-height:1.5;letter-spacing:.5px}
+.rail-status b{color:var(--green)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px}
+.dot.live{box-shadow:0 0 0 3px #4ade8033}
+
+/* topbar */
+.content{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:84px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0}
+.tb-left{display:flex;align-items:center;gap:24px}
+.tb-prop{display:flex;align-items:center;gap:10px;color:var(--green)}
+.tb-prop svg{width:20px;height:20px}
+.tb-prop b{display:block;color:var(--text);font-size:14px;font-family:var(--disp);font-weight:700}
+.tb-eyebrow{font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase}
+.tb-div{width:1px;height:36px;background:var(--border)}
+.tb-page h1{font-family:var(--disp);font-size:20px;font-weight:800;letter-spacing:-.3px}
+.tb-right{display:flex;align-items:center;gap:24px}
+.tb-meta{text-align:right}
+.tb-meta span{display:block;font-size:9px;letter-spacing:1.5px;color:var(--dim)}
+.tb-meta b{font-size:13px;color:var(--text)}
+.tb-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(145deg,#234a30,#16331f);border:1px solid var(--green);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:13px;color:var(--green)}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px}
+.eyebrow{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:7px;font-weight:500}
+.eyebrow svg{width:14px;height:14px;color:var(--green)}
+.eyebrow.bad{color:var(--red)}.eyebrow.bad svg{color:var(--red)}
+.eyebrow.good svg{color:var(--green)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.card-head.tight{margin-bottom:12px;align-items:center}
+.card-head h2{font-family:var(--disp);font-size:17px;font-weight:700;margin-top:8px}
+
+/* dashboard grid */
+.dash-grid{flex:1;display:grid;grid-template-columns:1fr 360px;gap:20px;padding:24px 32px;min-height:0}
+.map-card{display:flex;flex-direction:column}
+.map-wrap{flex:1;background:#0A0E14;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex}
+.seg{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px}
+.seg-btn{background:none;border:none;color:var(--dim);font-family:var(--mono);font-size:11px;padding:6px 12px;border-radius:7px;cursor:pointer;letter-spacing:.5px}
+.seg-btn.active{background:var(--surface3);color:var(--green)}
+.legend{margin-top:16px}
+.legend-title{font-size:9px;letter-spacing:2px;color:var(--dim)}
+.legend-bar{height:8px;border-radius:5px;margin:8px 0 6px;background:linear-gradient(90deg,#7F1D1D,#F87171,#F59E0B,#FBBF24,#A3E635,#4ADE80,#15803D)}
+.legend-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
+
+.side-col{display:flex;flex-direction:column;gap:20px;min-height:0}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.stat{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px}
+.stat-lbl{font-size:10px;color:var(--muted);letter-spacing:.5px}
+.stat-val{display:flex;align-items:baseline;gap:5px;margin-top:6px}
+.stat-val b{font-family:var(--disp);font-size:26px;font-weight:800;letter-spacing:-.5px}
+.stat-unit{font-size:11px;color:var(--dim)}
+.stat-delta{font-size:10px;margin-top:6px;display:inline-block}
+.stat.good .stat-val b{color:var(--green)} .stat.good .stat-delta{color:var(--green)}
+.stat.warn .stat-val b{color:var(--amber)} .stat.warn .stat-delta{color:var(--amber)}
+.stat.bad .stat-val b{color:var(--red)} .stat.bad .stat-delta{color:var(--red)}
+.mono-tag{font-size:10px;color:var(--muted);letter-spacing:.5px;display:flex;align-items:center}
+.series-foot{display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-top:6px}
+.alert-mini{display:flex;align-items:center;gap:14px}
+.alert-mini b{font-family:var(--disp);font-size:13px}
+.alert-mini p{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+.ico-pill{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ico-pill svg{width:20px;height:20px}
+.ico-pill.bad{background:#f8717119;color:var(--red);border:1px solid #f8717140}
+.ico-pill.warn{background:#f59e0b19;color:var(--amber);border:1px solid #f59e0b40}
+.ico-pill.good{background:#4ade8019;color:var(--green);border:1px solid #4ade8040}
+.ico-pill.info{background:#60a5fa19;color:var(--info);border:1px solid #60a5fa40}
+.risk{font-size:10px;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:20px;font-family:var(--disp)}
+.risk.bad{background:#f8717119;color:var(--red)} .risk.warn{background:#f59e0b19;color:var(--amber)}
+.risk.good{background:#4ade8019;color:var(--green)} .risk.info{background:#60a5fa19;color:var(--info)}
+
+/* alertas */
+.alert-grid{flex:1;display:grid;grid-template-columns:1fr 380px;gap:20px;padding:24px 32px;min-height:0}
+.alert-list{display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.chip{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:11px;padding:7px 14px;border-radius:20px;cursor:pointer;letter-spacing:.3px}
+.chip.active{background:var(--surface3);color:var(--text);border-color:var(--border2)}
+.chip.bad{color:var(--red)}.chip.warn{color:var(--amber)}.chip.info{color:var(--info)}.chip.good{color:var(--green)}
+.alert-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:14px;padding:18px;display:flex;gap:16px;align-items:flex-start}
+.alert-card.bad{border-left-color:var(--red)}.alert-card.warn{border-left-color:var(--amber)}
+.alert-card.good{border-left-color:var(--green)}.alert-card.info{border-left-color:var(--info)}
+.alert-body{flex:1}
+.alert-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.alert-tipo{font-size:10px;letter-spacing:2px;font-weight:700;font-family:var(--disp)}
+.alert-tipo.bad{color:var(--red)}.alert-tipo.warn{color:var(--amber)}.alert-tipo.good{color:var(--green)}.alert-tipo.info{color:var(--info)}
+.alert-body h3{font-family:var(--disp);font-size:15px;font-weight:700;margin-bottom:5px}
+.alert-body p{font-size:12px;color:var(--muted);line-height:1.5}
+.alert-meta{display:flex;gap:18px;margin-top:10px;font-size:11px;color:var(--dim)}
+.alert-meta span{display:flex;align-items:center;gap:5px}
+.alert-meta svg{width:13px;height:13px}
+.ghost-btn{background:none;border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:8px 14px;border-radius:9px;cursor:pointer;white-space:nowrap;align-self:center}
+.ghost-btn:hover{border-color:var(--green);color:var(--green)}
+.ghost-btn.wide{width:100%}
+
+.alert-detail{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:18px}
+.alert-detail h2{font-family:var(--disp);font-size:20px;font-weight:800;letter-spacing:-.3px}
+.detail-stat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.detail-stat .stat{padding:12px}
+.detail-stat .stat-val b{font-size:20px}
+.reco{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px}
+.reco p{font-size:13px;color:var(--text);line-height:1.6;margin-top:10px}
+.reco p b{color:var(--green)}
+.notify{display:flex;align-items:center;gap:12px;background:#4ade800d;border:1px solid #4ade8033;border-radius:12px;padding:14px}
+.notify b{font-size:13px;font-family:var(--disp);display:block}
+.notify .mono-tag{margin-top:3px}
+.detail-actions{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+.solid-btn{background:var(--green);color:#06210f;border:none;font-family:var(--disp);font-weight:700;font-size:13px;padding:13px;border-radius:11px;cursor:pointer}
+.solid-btn:hover{background:#6ee79b}
+
+/* agrobot */
+.bot-grid{flex:1;display:grid;grid-template-columns:1fr 340px;gap:20px;padding:24px 32px;min-height:0}
+.chat-card{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.chat-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--border)}
+.bot-orb{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#16331f,#0d1f14);border:1px solid #234a30;color:var(--green);display:flex;align-items:center;justify-content:center}
+.bot-orb svg{width:24px;height:24px}
+.chat-head b{font-family:var(--disp);font-size:15px;font-weight:700;display:block}
+.chat-stream{flex:1;padding:24px 22px;display:flex;flex-direction:column;gap:18px;overflow:hidden;background:radial-gradient(circle at 30% 0%,#161b2280,transparent 70%)}
+.msg{display:flex;gap:10px;max-width:78%;align-items:flex-end}
+.msg.bot{align-self:flex-start}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.bubble{padding:13px 16px;border-radius:16px;font-size:13px;line-height:1.55}
+.msg.bot .bubble{background:var(--surface3);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text)}
+.msg.user .bubble{background:linear-gradient(145deg,#1d3a27,#16331f);border:1px solid #234a30;border-bottom-right-radius:4px;color:#dffbe8}
+.msg-av{width:30px;height:30px;border-radius:9px;background:var(--surface3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:var(--disp);font-weight:700;color:var(--muted);flex-shrink:0}
+.bot-av{background:linear-gradient(145deg,#16331f,#0d1f14);border-color:#234a30;color:var(--green)}
+.bot-av svg{width:18px;height:18px}
+.chat-input{display:flex;gap:10px;padding:16px 22px;border-top:1px solid var(--border)}
+.chat-input input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:11px;padding:13px 16px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none}
+.chat-input input::placeholder{color:var(--dim)}
+.send-btn{width:46px;background:var(--green);border:none;border-radius:11px;color:#06210f;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.send-btn svg{width:20px;height:20px}
+.bot-side{display:flex;flex-direction:column;gap:20px}
+.suggest{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:12px 14px;border-radius:10px;cursor:pointer;margin-top:10px;line-height:1.4}
+.suggest:hover{border-color:var(--green);color:var(--green)}
+.bot-info p{font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px}
+.bot-info p b{color:var(--text)}
+.src-row{display:flex;gap:8px;margin-top:14px}
+.src{font-size:10px;color:var(--dim);background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:5px 9px;letter-spacing:.5px}
+</style>
+</head>
+<body>
+  <div><div class="frame-label">Tela 01 · Dashboard / Mapa NDVI</div>
+<section class="frame" id="tela-dashboard">
+  
+<aside class="rail">
+  <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="6" height="6" rx="1" transform="rotate(45 12 12)"/><path d="M5 5l3 3M16 16l3 3M5 19l3-3M19 5l-3 3"/></svg></span><span class="brand-name">Agro<b>Sat</b></span></div>
+  <nav class="rail-nav">
+    <div class="rail-item active"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="rail-lbl">Mapa</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg></span><span class="rail-lbl">Alertas</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg></span><span class="rail-lbl">Irrigação</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></span><span class="rail-lbl">Colheita</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg></span><span class="rail-lbl">AgroBot</span></div>
+  </nav>
+  <div class="rail-foot">
+    <div class="rail-status"><span class="dot live"></span>SENTINEL-2<br><b>online</b></div>
+  </div>
+</aside>
+  <main class="content">
+    
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-prop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg><div><span class="tb-eyebrow">PROPRIEDADE</span><b>Fazenda Santa Helena · GO</b></div></div>
+    <div class="tb-div"></div>
+    <div class="tb-page"><span class="tb-eyebrow">MONITORAMENTO</span><h1>Mapa do Talhão — NDVI</h1></div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-meta"><span>ÚLT. PASSAGEM</span><b>01.JUN 09:42</b></div>
+    <div class="tb-meta"><span>NUVEM</span><b>4%</b></div>
+    <div class="tb-avatar">HB</div>
+  </div>
+</header>
+    <div class="dash-grid">
+      <div class="card map-card">
+        <div class="card-head">
+          <div><span class="eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20s1-9 9-13c5-2 7 0 7 0s2 9-6 13c-5 2.5-10 0-10 0z"/><path d="M9 15s2-3 6-5"/></svg> TALHÃO 04 · SOJA</span><h2>Índice de Vegetação NDVI</h2></div>
+          <div class="seg">
+            <button class="seg-btn active">NDVI</button><button class="seg-btn">Umidade</button><button class="seg-btn">Térmico</button>
+          </div>
+        </div>
+        <div class="map-wrap">
+<svg viewBox="0 0 720 432" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa NDVI do talhão">
+  <defs>
+    <clipPath id="talhao"><polygon points="70,60 430,30 650,120 690,300 520,400 230,410 40,280 60,140"/></clipPath>
+  </defs>
+  <rect x="0" y="0" width="720" height="432" fill="#0A0E14"/>
+  <line x1="0" y1="0" x2="0" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="60" y1="0" x2="60" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="120" y1="0" x2="120" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="180" y1="0" x2="180" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="240" y1="0" x2="240" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="300" y1="0" x2="300" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="360" y1="0" x2="360" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="420" y1="0" x2="420" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="480" y1="0" x2="480" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="540" y1="0" x2="540" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="600" y1="0" x2="600" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="660" y1="0" x2="660" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="720" y1="0" x2="720" y2="432" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="0" y1="0" x2="720" y2="0" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="0" y1="60" x2="720" y2="60" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="0" y1="120" x2="720" y2="120" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="0" y1="180" x2="720" y2="180" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="0" y1="240" x2="720" y2="240" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="0" y1="300" x2="720" y2="300" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="0" y1="360" x2="720" y2="360" stroke="#30363D" stroke-width="0.5" opacity="0.4"/><line x1="0" y1="420" x2="720" y2="420" stroke="#30363D" stroke-width="0.5" opacity="0.4"/>
+  <g clip-path="url(#talhao)">
+    <rect x="241" y="31" width="28" height="28" rx="3" fill="rgb(130,227,81)" opacity="0.92"/>
+<rect x="271" y="31" width="28" height="28" rx="3" fill="rgb(151,229,63)" opacity="0.92"/>
+<rect x="301" y="31" width="28" height="28" rx="3" fill="rgb(172,226,51)" opacity="0.92"/>
+<rect x="331" y="31" width="28" height="28" rx="3" fill="rgb(191,217,48)" opacity="0.92"/>
+<rect x="361" y="31" width="28" height="28" rx="3" fill="rgb(213,208,43)" opacity="0.92"/>
+<rect x="391" y="31" width="28" height="28" rx="3" fill="rgb(239,196,38)" opacity="0.92"/>
+<rect x="421" y="31" width="28" height="28" rx="3" fill="rgb(250,183,30)" opacity="0.92"/>
+<rect x="451" y="31" width="28" height="28" rx="3" fill="rgb(247,170,20)" opacity="0.92"/>
+<rect x="61" y="61" width="28" height="28" rx="3" fill="rgb(73,221,127)" opacity="0.92"/>
+<rect x="91" y="61" width="28" height="28" rx="3" fill="rgb(80,223,123)" opacity="0.92"/>
+<rect x="121" y="61" width="28" height="28" rx="3" fill="rgb(93,224,112)" opacity="0.92"/>
+<rect x="151" y="61" width="28" height="28" rx="3" fill="rgb(109,225,98)" opacity="0.92"/>
+<rect x="181" y="61" width="28" height="28" rx="3" fill="rgb(126,227,84)" opacity="0.92"/>
+<rect x="211" y="61" width="28" height="28" rx="3" fill="rgb(143,228,70)" opacity="0.92"/>
+<rect x="241" y="61" width="28" height="28" rx="3" fill="rgb(158,230,57)" opacity="0.92"/>
+<rect x="271" y="61" width="28" height="28" rx="3" fill="rgb(172,226,51)" opacity="0.92"/>
+<rect x="301" y="61" width="28" height="28" rx="3" fill="rgb(185,220,49)" opacity="0.92"/>
+<rect x="331" y="61" width="28" height="28" rx="3" fill="rgb(200,213,46)" opacity="0.92"/>
+<rect x="361" y="61" width="28" height="28" rx="3" fill="rgb(222,204,42)" opacity="0.92"/>
+<rect x="391" y="61" width="28" height="28" rx="3" fill="rgb(251,190,35)" opacity="0.92"/>
+<rect x="421" y="61" width="28" height="28" rx="3" fill="rgb(248,174,23)" opacity="0.92"/>
+<rect x="451" y="61" width="28" height="28" rx="3" fill="rgb(245,153,23)" opacity="0.92"/>
+<rect x="481" y="61" width="28" height="28" rx="3" fill="rgb(247,125,85)" opacity="0.92"/>
+<rect x="511" y="61" width="28" height="28" rx="3" fill="rgb(226,97,97)" opacity="0.92"/>
+<rect x="61" y="91" width="28" height="28" rx="3" fill="rgb(112,225,96)" opacity="0.92"/>
+<rect x="91" y="91" width="28" height="28" rx="3" fill="rgb(122,226,87)" opacity="0.92"/>
+<rect x="121" y="91" width="28" height="28" rx="3" fill="rgb(135,227,77)" opacity="0.92"/>
+<rect x="151" y="91" width="28" height="28" rx="3" fill="rgb(147,229,67)" opacity="0.92"/>
+<rect x="181" y="91" width="28" height="28" rx="3" fill="rgb(158,230,57)" opacity="0.92"/>
+<rect x="211" y="91" width="28" height="28" rx="3" fill="rgb(166,229,52)" opacity="0.92"/>
+<rect x="241" y="91" width="28" height="28" rx="3" fill="rgb(173,226,51)" opacity="0.92"/>
+<rect x="271" y="91" width="28" height="28" rx="3" fill="rgb(179,223,50)" opacity="0.92"/>
+<rect x="301" y="91" width="28" height="28" rx="3" fill="rgb(187,219,48)" opacity="0.92"/>
+<rect x="331" y="91" width="28" height="28" rx="3" fill="rgb(200,213,46)" opacity="0.92"/>
+<rect x="361" y="91" width="28" height="28" rx="3" fill="rgb(225,203,41)" opacity="0.92"/>
+<rect x="391" y="91" width="28" height="28" rx="3" fill="rgb(250,186,32)" opacity="0.92"/>
+<rect x="421" y="91" width="28" height="28" rx="3" fill="rgb(246,166,17)" opacity="0.92"/>
+<rect x="451" y="91" width="28" height="28" rx="3" fill="rgb(247,134,66)" opacity="0.92"/>
+<rect x="481" y="91" width="28" height="28" rx="3" fill="rgb(212,88,88)" opacity="0.92"/>
+<rect x="511" y="91" width="28" height="28" rx="3" fill="rgb(144,41,41)" opacity="0.92"/>
+<rect x="541" y="91" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="571" y="91" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="61" y="121" width="28" height="28" rx="3" fill="rgb(149,229,65)" opacity="0.92"/>
+<rect x="91" y="121" width="28" height="28" rx="3" fill="rgb(158,230,57)" opacity="0.92"/>
+<rect x="121" y="121" width="28" height="28" rx="3" fill="rgb(166,229,52)" opacity="0.92"/>
+<rect x="151" y="121" width="28" height="28" rx="3" fill="rgb(172,226,51)" opacity="0.92"/>
+<rect x="181" y="121" width="28" height="28" rx="3" fill="rgb(175,225,51)" opacity="0.92"/>
+<rect x="211" y="121" width="28" height="28" rx="3" fill="rgb(176,224,50)" opacity="0.92"/>
+<rect x="241" y="121" width="28" height="28" rx="3" fill="rgb(176,224,51)" opacity="0.92"/>
+<rect x="271" y="121" width="28" height="28" rx="3" fill="rgb(176,224,50)" opacity="0.92"/>
+<rect x="301" y="121" width="28" height="28" rx="3" fill="rgb(182,222,49)" opacity="0.92"/>
+<rect x="331" y="121" width="28" height="28" rx="3" fill="rgb(197,215,46)" opacity="0.92"/>
+<rect x="361" y="121" width="28" height="28" rx="3" fill="rgb(225,202,41)" opacity="0.92"/>
+<rect x="391" y="121" width="28" height="28" rx="3" fill="rgb(250,183,30)" opacity="0.92"/>
+<rect x="421" y="121" width="28" height="28" rx="3" fill="rgb(245,159,12)" opacity="0.92"/>
+<rect x="451" y="121" width="28" height="28" rx="3" fill="rgb(247,121,96)" opacity="0.92"/>
+<rect x="481" y="121" width="28" height="28" rx="3" fill="rgb(171,60,60)" opacity="0.92"/>
+<rect x="511" y="121" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="541" y="121" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="571" y="121" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="601" y="121" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="631" y="121" width="28" height="28" rx="3" fill="rgb(223,96,96)" opacity="0.92"/>
+<rect x="61" y="151" width="28" height="28" rx="3" fill="rgb(175,225,51)" opacity="0.92"/>
+<rect x="91" y="151" width="28" height="28" rx="3" fill="rgb(180,222,50)" opacity="0.92"/>
+<rect x="121" y="151" width="28" height="28" rx="3" fill="rgb(183,221,49)" opacity="0.92"/>
+<rect x="151" y="151" width="28" height="28" rx="3" fill="rgb(183,221,49)" opacity="0.92"/>
+<rect x="181" y="151" width="28" height="28" rx="3" fill="rgb(181,222,50)" opacity="0.92"/>
+<rect x="211" y="151" width="28" height="28" rx="3" fill="rgb(176,224,50)" opacity="0.92"/>
+<rect x="241" y="151" width="28" height="28" rx="3" fill="rgb(172,226,51)" opacity="0.92"/>
+<rect x="271" y="151" width="28" height="28" rx="3" fill="rgb(171,226,51)" opacity="0.92"/>
+<rect x="301" y="151" width="28" height="28" rx="3" fill="rgb(177,224,50)" opacity="0.92"/>
+<rect x="331" y="151" width="28" height="28" rx="3" fill="rgb(195,216,47)" opacity="0.92"/>
+<rect x="361" y="151" width="28" height="28" rx="3" fill="rgb(227,202,41)" opacity="0.92"/>
+<rect x="391" y="151" width="28" height="28" rx="3" fill="rgb(249,182,29)" opacity="0.92"/>
+<rect x="421" y="151" width="28" height="28" rx="3" fill="rgb(245,156,15)" opacity="0.92"/>
+<rect x="451" y="151" width="28" height="28" rx="3" fill="rgb(248,117,104)" opacity="0.92"/>
+<rect x="481" y="151" width="28" height="28" rx="3" fill="rgb(166,56,56)" opacity="0.92"/>
+<rect x="511" y="151" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="541" y="151" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="571" y="151" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="601" y="151" width="28" height="28" rx="3" fill="rgb(150,45,45)" opacity="0.92"/>
+<rect x="631" y="151" width="28" height="28" rx="3" fill="rgb(244,110,110)" opacity="0.92"/>
+<rect x="61" y="181" width="28" height="28" rx="3" fill="rgb(185,220,49)" opacity="0.92"/>
+<rect x="91" y="181" width="28" height="28" rx="3" fill="rgb(187,219,48)" opacity="0.92"/>
+<rect x="121" y="181" width="28" height="28" rx="3" fill="rgb(187,220,48)" opacity="0.92"/>
+<rect x="151" y="181" width="28" height="28" rx="3" fill="rgb(184,221,49)" opacity="0.92"/>
+<rect x="181" y="181" width="28" height="28" rx="3" fill="rgb(179,223,50)" opacity="0.92"/>
+<rect x="211" y="181" width="28" height="28" rx="3" fill="rgb(173,225,51)" opacity="0.92"/>
+<rect x="241" y="181" width="28" height="28" rx="3" fill="rgb(169,227,52)" opacity="0.92"/>
+<rect x="271" y="181" width="28" height="28" rx="3" fill="rgb(170,227,52)" opacity="0.92"/>
+<rect x="301" y="181" width="28" height="28" rx="3" fill="rgb(178,223,50)" opacity="0.92"/>
+<rect x="331" y="181" width="28" height="28" rx="3" fill="rgb(197,215,46)" opacity="0.92"/>
+<rect x="361" y="181" width="28" height="28" rx="3" fill="rgb(230,200,40)" opacity="0.92"/>
+<rect x="391" y="181" width="28" height="28" rx="3" fill="rgb(249,181,28)" opacity="0.92"/>
+<rect x="421" y="181" width="28" height="28" rx="3" fill="rgb(245,159,11)" opacity="0.92"/>
+<rect x="451" y="181" width="28" height="28" rx="3" fill="rgb(247,125,86)" opacity="0.92"/>
+<rect x="481" y="181" width="28" height="28" rx="3" fill="rgb(200,80,80)" opacity="0.92"/>
+<rect x="511" y="181" width="28" height="28" rx="3" fill="rgb(146,42,42)" opacity="0.92"/>
+<rect x="541" y="181" width="28" height="28" rx="3" fill="rgb(140,38,38)" opacity="0.92"/>
+<rect x="571" y="181" width="28" height="28" rx="3" fill="rgb(154,48,48)" opacity="0.92"/>
+<rect x="601" y="181" width="28" height="28" rx="3" fill="rgb(219,93,93)" opacity="0.92"/>
+<rect x="631" y="181" width="28" height="28" rx="3" fill="rgb(246,139,54)" opacity="0.92"/>
+<rect x="61" y="211" width="28" height="28" rx="3" fill="rgb(179,223,50)" opacity="0.92"/>
+<rect x="91" y="211" width="28" height="28" rx="3" fill="rgb(180,223,50)" opacity="0.92"/>
+<rect x="121" y="211" width="28" height="28" rx="3" fill="rgb(180,222,50)" opacity="0.92"/>
+<rect x="151" y="211" width="28" height="28" rx="3" fill="rgb(179,223,50)" opacity="0.92"/>
+<rect x="181" y="211" width="28" height="28" rx="3" fill="rgb(177,224,50)" opacity="0.92"/>
+<rect x="211" y="211" width="28" height="28" rx="3" fill="rgb(174,225,51)" opacity="0.92"/>
+<rect x="241" y="211" width="28" height="28" rx="3" fill="rgb(173,226,51)" opacity="0.92"/>
+<rect x="271" y="211" width="28" height="28" rx="3" fill="rgb(175,224,51)" opacity="0.92"/>
+<rect x="301" y="211" width="28" height="28" rx="3" fill="rgb(185,220,49)" opacity="0.92"/>
+<rect x="331" y="211" width="28" height="28" rx="3" fill="rgb(204,212,45)" opacity="0.92"/>
+<rect x="361" y="211" width="28" height="28" rx="3" fill="rgb(234,199,39)" opacity="0.92"/>
+<rect x="391" y="211" width="28" height="28" rx="3" fill="rgb(250,183,30)" opacity="0.92"/>
+<rect x="421" y="211" width="28" height="28" rx="3" fill="rgb(246,165,16)" opacity="0.92"/>
+<rect x="451" y="211" width="28" height="28" rx="3" fill="rgb(246,143,46)" opacity="0.92"/>
+<rect x="481" y="211" width="28" height="28" rx="3" fill="rgb(247,121,96)" opacity="0.92"/>
+<rect x="511" y="211" width="28" height="28" rx="3" fill="rgb(233,103,103)" opacity="0.92"/>
+<rect x="541" y="211" width="28" height="28" rx="3" fill="rgb(231,101,101)" opacity="0.92"/>
+<rect x="571" y="211" width="28" height="28" rx="3" fill="rgb(248,119,100)" opacity="0.92"/>
+<rect x="601" y="211" width="28" height="28" rx="3" fill="rgb(246,144,42)" opacity="0.92"/>
+<rect x="631" y="211" width="28" height="28" rx="3" fill="rgb(248,172,22)" opacity="0.92"/>
+<rect x="31" y="241" width="28" height="28" rx="3" fill="rgb(159,230,56)" opacity="0.92"/>
+<rect x="61" y="241" width="28" height="28" rx="3" fill="rgb(160,230,56)" opacity="0.92"/>
+<rect x="91" y="241" width="28" height="28" rx="3" fill="rgb(164,230,53)" opacity="0.92"/>
+<rect x="121" y="241" width="28" height="28" rx="3" fill="rgb(170,227,52)" opacity="0.92"/>
+<rect x="151" y="241" width="28" height="28" rx="3" fill="rgb(175,225,51)" opacity="0.92"/>
+<rect x="181" y="241" width="28" height="28" rx="3" fill="rgb(179,223,50)" opacity="0.92"/>
+<rect x="211" y="241" width="28" height="28" rx="3" fill="rgb(181,222,49)" opacity="0.92"/>
+<rect x="241" y="241" width="28" height="28" rx="3" fill="rgb(183,221,49)" opacity="0.92"/>
+<rect x="271" y="241" width="28" height="28" rx="3" fill="rgb(188,219,48)" opacity="0.92"/>
+<rect x="301" y="241" width="28" height="28" rx="3" fill="rgb(197,215,46)" opacity="0.92"/>
+<rect x="331" y="241" width="28" height="28" rx="3" fill="rgb(212,208,44)" opacity="0.92"/>
+<rect x="361" y="241" width="28" height="28" rx="3" fill="rgb(233,199,40)" opacity="0.92"/>
+<rect x="391" y="241" width="28" height="28" rx="3" fill="rgb(250,188,34)" opacity="0.92"/>
+<rect x="421" y="241" width="28" height="28" rx="3" fill="rgb(248,177,25)" opacity="0.92"/>
+<rect x="451" y="241" width="28" height="28" rx="3" fill="rgb(246,166,17)" opacity="0.92"/>
+<rect x="481" y="241" width="28" height="28" rx="3" fill="rgb(245,157,14)" opacity="0.92"/>
+<rect x="511" y="241" width="28" height="28" rx="3" fill="rgb(245,152,25)" opacity="0.92"/>
+<rect x="541" y="241" width="28" height="28" rx="3" fill="rgb(245,156,16)" opacity="0.92"/>
+<rect x="571" y="241" width="28" height="28" rx="3" fill="rgb(247,166,17)" opacity="0.92"/>
+<rect x="601" y="241" width="28" height="28" rx="3" fill="rgb(249,182,29)" opacity="0.92"/>
+<rect x="631" y="241" width="28" height="28" rx="3" fill="rgb(225,203,41)" opacity="0.92"/>
+<rect x="661" y="241" width="28" height="28" rx="3" fill="rgb(175,225,51)" opacity="0.92"/>
+<rect x="61" y="271" width="28" height="28" rx="3" fill="rgb(134,227,78)" opacity="0.92"/>
+<rect x="91" y="271" width="28" height="28" rx="3" fill="rgb(145,228,68)" opacity="0.92"/>
+<rect x="121" y="271" width="28" height="28" rx="3" fill="rgb(160,230,56)" opacity="0.92"/>
+<rect x="151" y="271" width="28" height="28" rx="3" fill="rgb(174,225,51)" opacity="0.92"/>
+<rect x="181" y="271" width="28" height="28" rx="3" fill="rgb(185,220,49)" opacity="0.92"/>
+<rect x="211" y="271" width="28" height="28" rx="3" fill="rgb(193,217,47)" opacity="0.92"/>
+<rect x="241" y="271" width="28" height="28" rx="3" fill="rgb(197,215,46)" opacity="0.92"/>
+<rect x="271" y="271" width="28" height="28" rx="3" fill="rgb(201,213,46)" opacity="0.92"/>
+<rect x="301" y="271" width="28" height="28" rx="3" fill="rgb(205,211,45)" opacity="0.92"/>
+<rect x="331" y="271" width="28" height="28" rx="3" fill="rgb(213,208,43)" opacity="0.92"/>
+<rect x="361" y="271" width="28" height="28" rx="3" fill="rgb(223,203,41)" opacity="0.92"/>
+<rect x="391" y="271" width="28" height="28" rx="3" fill="rgb(235,198,39)" opacity="0.92"/>
+<rect x="421" y="271" width="28" height="28" rx="3" fill="rgb(249,192,36)" opacity="0.92"/>
+<rect x="451" y="271" width="28" height="28" rx="3" fill="rgb(250,188,33)" opacity="0.92"/>
+<rect x="481" y="271" width="28" height="28" rx="3" fill="rgb(250,185,32)" opacity="0.92"/>
+<rect x="511" y="271" width="28" height="28" rx="3" fill="rgb(250,186,32)" opacity="0.92"/>
+<rect x="541" y="271" width="28" height="28" rx="3" fill="rgb(251,191,36)" opacity="0.92"/>
+<rect x="571" y="271" width="28" height="28" rx="3" fill="rgb(227,202,41)" opacity="0.92"/>
+<rect x="601" y="271" width="28" height="28" rx="3" fill="rgb(196,216,47)" opacity="0.92"/>
+<rect x="631" y="271" width="28" height="28" rx="3" fill="rgb(162,230,54)" opacity="0.92"/>
+<rect x="661" y="271" width="28" height="28" rx="3" fill="rgb(129,227,81)" opacity="0.92"/>
+<rect x="91" y="301" width="28" height="28" rx="3" fill="rgb(129,227,82)" opacity="0.92"/>
+<rect x="121" y="301" width="28" height="28" rx="3" fill="rgb(153,229,61)" opacity="0.92"/>
+<rect x="151" y="301" width="28" height="28" rx="3" fill="rgb(176,224,51)" opacity="0.92"/>
+<rect x="181" y="301" width="28" height="28" rx="3" fill="rgb(193,217,47)" opacity="0.92"/>
+<rect x="211" y="301" width="28" height="28" rx="3" fill="rgb(203,212,45)" opacity="0.92"/>
+<rect x="241" y="301" width="28" height="28" rx="3" fill="rgb(207,210,44)" opacity="0.92"/>
+<rect x="271" y="301" width="28" height="28" rx="3" fill="rgb(207,210,44)" opacity="0.92"/>
+<rect x="301" y="301" width="28" height="28" rx="3" fill="rgb(205,211,45)" opacity="0.92"/>
+<rect x="331" y="301" width="28" height="28" rx="3" fill="rgb(203,212,45)" opacity="0.92"/>
+<rect x="361" y="301" width="28" height="28" rx="3" fill="rgb(202,213,46)" opacity="0.92"/>
+<rect x="391" y="301" width="28" height="28" rx="3" fill="rgb(202,213,46)" opacity="0.92"/>
+<rect x="421" y="301" width="28" height="28" rx="3" fill="rgb(202,213,46)" opacity="0.92"/>
+<rect x="451" y="301" width="28" height="28" rx="3" fill="rgb(201,213,46)" opacity="0.92"/>
+<rect x="481" y="301" width="28" height="28" rx="3" fill="rgb(197,215,46)" opacity="0.92"/>
+<rect x="511" y="301" width="28" height="28" rx="3" fill="rgb(189,218,48)" opacity="0.92"/>
+<rect x="541" y="301" width="28" height="28" rx="3" fill="rgb(177,224,50)" opacity="0.92"/>
+<rect x="571" y="301" width="28" height="28" rx="3" fill="rgb(160,230,55)" opacity="0.92"/>
+<rect x="601" y="301" width="28" height="28" rx="3" fill="rgb(140,228,72)" opacity="0.92"/>
+<rect x="631" y="301" width="28" height="28" rx="3" fill="rgb(120,226,89)" opacity="0.92"/>
+<rect x="121" y="331" width="28" height="28" rx="3" fill="rgb(149,229,65)" opacity="0.92"/>
+<rect x="151" y="331" width="28" height="28" rx="3" fill="rgb(176,224,50)" opacity="0.92"/>
+<rect x="181" y="331" width="28" height="28" rx="3" fill="rgb(196,215,47)" opacity="0.92"/>
+<rect x="211" y="331" width="28" height="28" rx="3" fill="rgb(206,211,45)" opacity="0.92"/>
+<rect x="241" y="331" width="28" height="28" rx="3" fill="rgb(206,211,45)" opacity="0.92"/>
+<rect x="271" y="331" width="28" height="28" rx="3" fill="rgb(200,214,46)" opacity="0.92"/>
+<rect x="301" y="331" width="28" height="28" rx="3" fill="rgb(191,218,48)" opacity="0.92"/>
+<rect x="331" y="331" width="28" height="28" rx="3" fill="rgb(180,222,50)" opacity="0.92"/>
+<rect x="361" y="331" width="28" height="28" rx="3" fill="rgb(171,227,52)" opacity="0.92"/>
+<rect x="391" y="331" width="28" height="28" rx="3" fill="rgb(162,230,53)" opacity="0.92"/>
+<rect x="421" y="331" width="28" height="28" rx="3" fill="rgb(156,229,59)" opacity="0.92"/>
+<rect x="451" y="331" width="28" height="28" rx="3" fill="rgb(150,229,64)" opacity="0.92"/>
+<rect x="481" y="331" width="28" height="28" rx="3" fill="rgb(144,228,69)" opacity="0.92"/>
+<rect x="511" y="331" width="28" height="28" rx="3" fill="rgb(137,228,75)" opacity="0.92"/>
+<rect x="541" y="331" width="28" height="28" rx="3" fill="rgb(130,227,81)" opacity="0.92"/>
+<rect x="571" y="331" width="28" height="28" rx="3" fill="rgb(121,226,88)" opacity="0.92"/>
+<rect x="181" y="361" width="28" height="28" rx="3" fill="rgb(189,219,48)" opacity="0.92"/>
+<rect x="211" y="361" width="28" height="28" rx="3" fill="rgb(195,216,47)" opacity="0.92"/>
+<rect x="241" y="361" width="28" height="28" rx="3" fill="rgb(190,218,48)" opacity="0.92"/>
+<rect x="271" y="361" width="28" height="28" rx="3" fill="rgb(179,223,50)" opacity="0.92"/>
+<rect x="301" y="361" width="28" height="28" rx="3" fill="rgb(163,230,53)" opacity="0.92"/>
+<rect x="331" y="361" width="28" height="28" rx="3" fill="rgb(148,229,66)" opacity="0.92"/>
+<rect x="361" y="361" width="28" height="28" rx="3" fill="rgb(135,227,77)" opacity="0.92"/>
+<rect x="391" y="361" width="28" height="28" rx="3" fill="rgb(125,227,85)" opacity="0.92"/>
+<rect x="421" y="361" width="28" height="28" rx="3" fill="rgb(118,226,91)" opacity="0.92"/>
+<rect x="451" y="361" width="28" height="28" rx="3" fill="rgb(114,226,94)" opacity="0.92"/>
+<rect x="481" y="361" width="28" height="28" rx="3" fill="rgb(112,225,96)" opacity="0.92"/>
+<rect x="511" y="361" width="28" height="28" rx="3" fill="rgb(112,225,96)" opacity="0.92"/>
+<rect x="541" y="361" width="28" height="28" rx="3" fill="rgb(111,225,97)" opacity="0.92"/>
+<rect x="211" y="391" width="28" height="28" rx="3" fill="rgb(169,227,52)" opacity="0.92"/>
+<rect x="241" y="391" width="28" height="28" rx="3" fill="rgb(161,230,55)" opacity="0.92"/>
+<rect x="271" y="391" width="28" height="28" rx="3" fill="rgb(146,228,68)" opacity="0.92"/>
+<rect x="301" y="391" width="28" height="28" rx="3" fill="rgb(129,227,81)" opacity="0.92"/>
+<rect x="331" y="391" width="28" height="28" rx="3" fill="rgb(115,226,94)" opacity="0.92"/>
+
+  </g>
+  <polygon points="70,60 430,30 650,120 690,300 520,400 230,410 40,280 60,140" fill="none" stroke="#4ADE80" stroke-width="2" stroke-dasharray="2 4" opacity="0.9"/>
+  <circle cx="560" cy="130" r="46" fill="none" stroke="#F87171" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <circle cx="560" cy="130" r="4" fill="#F87171"/>
+  <text x="560" y="100" fill="#F87171" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">FOCO · ANOMALIA</text>
+</svg></div>
+        <div class="legend">
+          <span class="legend-title">SAÚDE DA VEGETAÇÃO</span>
+          <div class="legend-bar"></div>
+          <div class="legend-scale"><span>0.0 estresse</span><span>0.5</span><span>1.0 vigor</span></div>
+        </div>
+      </div>
+
+      <div class="side-col">
+        <div class="card">
+          <span class="eyebrow">LEITURA ATUAL</span>
+          <div class="stat-row">
+            
+<div class="stat good">
+  <span class="stat-lbl">NDVI médio</span>
+  <div class="stat-val"><b>0.66</b><span class="stat-unit">idx</span></div>
+  <span class="stat-delta good">▾ 0.08 vs. 7d</span>
+</div>
+            
+<div class="stat warn">
+  <span class="stat-lbl">Área estresse</span>
+  <div class="stat-val"><b>12.4</b><span class="stat-unit">%</span></div>
+  <span class="stat-delta warn">▴ 4.1%</span>
+</div>
+          </div>
+          <div class="stat-row">
+            
+<div class="stat bad">
+  <span class="stat-lbl">NDVI mín.</span>
+  <div class="stat-val"><b>0.21</b><span class="stat-unit">idx</span></div>
+  
+</div>
+            
+<div class="stat good">
+  <span class="stat-lbl">NDVI máx.</span>
+  <div class="stat-val"><b>0.84</b><span class="stat-unit">idx</span></div>
+  
+</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head tight"><span class="eyebrow">SÉRIE 30 DIAS</span><span class="mono-tag">−10% no ciclo</span></div>
+          <svg viewBox="0 0 280 70" width="100%" height="70" preserveAspectRatio="none">
+  <polyline points="0,56.00000000000001 17.5,52.00000000000001 35,48 52.5,42.000000000000014 70,38.000000000000014 87.5,34.000000000000014 105,28 122.5,24 140,22 157.5,20 175,18 192.5,22 210,26 227.5,32.000000000000014 245,38.000000000000014 262.5,44 280,48" fill="none" stroke="#4ADE80" stroke-width="2" stroke-linejoin="round"/>
+  <polyline points="0,70 0,56.00000000000001 17.5,52.00000000000001 35,48 52.5,42.000000000000014 70,38.000000000000014 87.5,34.000000000000014 105,28 122.5,24 140,22 157.5,20 175,18 192.5,22 210,26 227.5,32.000000000000014 245,38.000000000000014 262.5,44 280,48 280,70" fill="#4ADE8022" stroke="none"/>
+</svg>
+          <div class="series-foot"><span>02.MAI</span><span>01.JUN</span></div>
+        </div>
+        <div class="card alert-mini">
+          <span class="ico-pill bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg></span>
+          <div><b>Anomalia detectada</b><p>Queda atípica de NDVI no setor NE. Possível foco de praga.</p></div>
+          <span class="risk bad">ALTO</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</section></div>
+  <div><div class="frame-label">Tela 02 · Central de Alertas</div>
+<section class="frame" id="tela-alertas">
+  
+<aside class="rail">
+  <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="6" height="6" rx="1" transform="rotate(45 12 12)"/><path d="M5 5l3 3M16 16l3 3M5 19l3-3M19 5l-3 3"/></svg></span><span class="brand-name">Agro<b>Sat</b></span></div>
+  <nav class="rail-nav">
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="rail-lbl">Mapa</span></div>
+    <div class="rail-item active"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg></span><span class="rail-lbl">Alertas</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg></span><span class="rail-lbl">Irrigação</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></span><span class="rail-lbl">Colheita</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg></span><span class="rail-lbl">AgroBot</span></div>
+  </nav>
+  <div class="rail-foot">
+    <div class="rail-status"><span class="dot live"></span>SENTINEL-2<br><b>online</b></div>
+  </div>
+</aside>
+  <main class="content">
+    
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-prop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg><div><span class="tb-eyebrow">PROPRIEDADE</span><b>Fazenda Santa Helena · GO</b></div></div>
+    <div class="tb-div"></div>
+    <div class="tb-page"><span class="tb-eyebrow">NOTIFICAÇÕES</span><h1>Central de Alertas</h1></div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-meta"><span>ÚLT. PASSAGEM</span><b>01.JUN 09:42</b></div>
+    <div class="tb-meta"><span>NUVEM</span><b>4%</b></div>
+    <div class="tb-avatar">HB</div>
+  </div>
+</header>
+    <div class="alert-grid">
+      <div class="alert-list">
+        <div class="filters">
+          <button class="chip active">Todos · 7</button>
+          <button class="chip bad">Praga · 2</button>
+          <button class="chip warn">Irrigação · 3</button>
+          <button class="chip info">Clima · 1</button>
+          <button class="chip good">Colheita · 1</button>
+        </div>
+        
+<article class="alert-card bad">
+  <span class="ico-pill bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg></span>
+  <div class="alert-body">
+    <div class="alert-top"><span class="alert-tipo bad">PRAGA</span><span class="risk bad">ALTO</span></div>
+    <h3>Foco de anomalia no Talhão 04</h3>
+    <p>Queda de NDVI de 0.74 → 0.21 em 6 dias no setor nordeste. Padrão compatível com infestação inicial.</p>
+    <div class="alert-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>Talhão 04 · Soja</span><span>há 2h</span></div>
+  </div>
+  <button class="ghost-btn">Ver →</button>
+</article>
+        
+<article class="alert-card warn">
+  <span class="ico-pill warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg></span>
+  <div class="alert-body">
+    <div class="alert-top"><span class="alert-tipo warn">IRRIGAÇÃO</span><span class="risk warn">MÉDIO</span></div>
+    <h3>Estresse hídrico no Talhão 02</h3>
+    <p>Umidade do solo em 28%. Sem previsão de chuva nos próximos 4 dias.</p>
+    <div class="alert-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>Talhão 02 · Milho</span><span>há 5h</span></div>
+  </div>
+  <button class="ghost-btn">Ver →</button>
+</article>
+        
+<article class="alert-card good">
+  <span class="ico-pill good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></span>
+  <div class="alert-body">
+    <div class="alert-top"><span class="alert-tipo good">COLHEITA</span><span class="risk good">INFO</span></div>
+    <h3>Janela ideal aproximando</h3>
+    <p>Maturação em 91%. Janela seca entre 06 e 09.JUN — condição ótima para colher.</p>
+    <div class="alert-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>Talhão 01 · Soja</span><span>há 8h</span></div>
+  </div>
+  <button class="ghost-btn">Ver →</button>
+</article>
+        
+<article class="alert-card info">
+  <span class="ico-pill info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="6" height="6" rx="1" transform="rotate(45 12 12)"/><path d="M5 5l3 3M16 16l3 3M5 19l3-3M19 5l-3 3"/></svg></span>
+  <div class="alert-body">
+    <div class="alert-top"><span class="alert-tipo info">CLIMA</span><span class="risk info">BAIXO</span></div>
+    <h3>Risco de geada leve</h3>
+    <p>CPTEC projeta mínima de 3°C para 04.JUN. Monitorar cultura sensível.</p>
+    <div class="alert-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>Fazenda · GO</span><span>ontem</span></div>
+  </div>
+  <button class="ghost-btn">Ver →</button>
+</article>
+        
+<article class="alert-card warn">
+  <span class="ico-pill warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg></span>
+  <div class="alert-body">
+    <div class="alert-top"><span class="alert-tipo warn">IRRIGAÇÃO</span><span class="risk warn">MÉDIO</span></div>
+    <h3>Excesso de água no Talhão 05</h3>
+    <p>Solo saturado após 32mm de chuva. Suspender irrigação programada.</p>
+    <div class="alert-meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>Talhão 05 · Café</span><span>ontem</span></div>
+  </div>
+  <button class="ghost-btn">Ver →</button>
+</article>
+      </div>
+
+      <aside class="alert-detail">
+        <span class="eyebrow bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg> ALERTA SELECIONADO</span>
+        <h2>Foco de praga — Talhão 04</h2>
+        <div class="detail-stat">
+          
+<div class="stat bad">
+  <span class="stat-lbl">Risco</span>
+  <div class="stat-val"><b>ALTO</b><span class="stat-unit"></span></div>
+  
+</div>
+          
+<div class="stat warn">
+  <span class="stat-lbl">Área afetada</span>
+  <div class="stat-val"><b>12.4</b><span class="stat-unit">%</span></div>
+  
+</div>
+          
+<div class="stat good">
+  <span class="stat-lbl">Detecção</span>
+  <div class="stat-val"><b>−6</b><span class="stat-unit">dias</span></div>
+  
+</div>
+        </div>
+        <div class="reco">
+          <span class="eyebrow good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20s1-9 9-13c5-2 7 0 7 0s2 9-6 13c-5 2.5-10 0-10 0z"/><path d="M9 15s2-3 6-5"/></svg> RECOMENDAÇÃO</span>
+          <p><b>Inspeção em campo no setor NE em até 48h.</b> Confirmar presença de lagarta. Considerar controle localizado para evitar alastramento.</p>
+        </div>
+        <div class="notify">
+          <span class="dot live"></span>
+          <div><b>Enviado via WhatsApp</b><span class="mono-tag">01.JUN 09:44 · entregue</span></div>
+        </div>
+        <div class="detail-actions">
+          <button class="solid-btn">Marcar como resolvido</button>
+          <button class="ghost-btn wide">Abrir no mapa</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</section></div>
+  <div><div class="frame-label">Tela 03 · AgroBot</div>
+<section class="frame" id="tela-agrobot">
+  
+<aside class="rail">
+  <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="6" height="6" rx="1" transform="rotate(45 12 12)"/><path d="M5 5l3 3M16 16l3 3M5 19l3-3M19 5l-3 3"/></svg></span><span class="brand-name">Agro<b>Sat</b></span></div>
+  <nav class="rail-nav">
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="rail-lbl">Mapa</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg></span><span class="rail-lbl">Alertas</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg></span><span class="rail-lbl">Irrigação</span></div>
+    <div class="rail-item"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></span><span class="rail-lbl">Colheita</span></div>
+    <div class="rail-item active"><span class="rail-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg></span><span class="rail-lbl">AgroBot</span></div>
+  </nav>
+  <div class="rail-foot">
+    <div class="rail-status"><span class="dot live"></span>SENTINEL-2<br><b>online</b></div>
+  </div>
+</aside>
+  <main class="content">
+    
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-prop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg><div><span class="tb-eyebrow">PROPRIEDADE</span><b>Fazenda Santa Helena · GO</b></div></div>
+    <div class="tb-div"></div>
+    <div class="tb-page"><span class="tb-eyebrow">IA · LINGUAGEM NATURAL</span><h1>AgroBot — Assistente</h1></div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-meta"><span>ÚLT. PASSAGEM</span><b>01.JUN 09:42</b></div>
+    <div class="tb-meta"><span>NUVEM</span><b>4%</b></div>
+    <div class="tb-avatar">HB</div>
+  </div>
+</header>
+    <div class="bot-grid">
+      <div class="card chat-card">
+        <div class="chat-head">
+          <span class="bot-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg></span>
+          <div><b>AgroBot</b><span class="mono-tag"><span class="dot live"></span>contexto: Talhão 04 · Soja</span></div>
+        </div>
+        <div class="chat-stream">
+          <div class="msg bot"><span class="msg-av bot-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg></span><div class="bubble">Olá, Henrique 👋 Detectei uma anomalia no <b>Talhão 04</b> hoje. Quer que eu explique?</div></div>
+          <div class="msg user"><div class="bubble">Minha plantação está com risco de praga?</div><span class="msg-av">HB</span></div>
+          <div class="msg bot"><span class="msg-av bot-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg></span><div class="bubble">Sim. O NDVI do setor nordeste caiu de <b>0.74 para 0.21</b> em 6 dias — queda atípica. Risco classificado como <b style='color:#F87171'>ALTO</b>. Recomendo inspeção em campo nas próximas 48h.</div></div>
+          <div class="msg user"><div class="bubble">E quando devo colher a soja?</div><span class="msg-av">HB</span></div>
+          <div class="msg bot"><span class="msg-av bot-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg></span><div class="bubble">A maturação está em <b>91%</b>. A melhor janela é entre <b>06 e 09 de junho</b> — período seco, sem risco de chuva. Depois disso entra frente úmida no dia 10.</div></div>
+          <div class="msg user"><div class="bubble">Preciso irrigar hoje?</div><span class="msg-av">HB</span></div>
+          <div class="msg bot"><span class="msg-av bot-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg></span><div class="bubble">No Talhão 04, não. Umidade do solo em <b>61%</b> e chuva de 12mm prevista para amanhã. <b style='color:#4ADE80'>Aguarde.</b></div></div>
+        </div>
+        <div class="chat-input">
+          <input type="text" placeholder="Pergunte sobre sua lavoura…" />
+          <button class="send-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12l16-8-6 16-3-6z"/></svg></button>
+        </div>
+      </div>
+
+      <aside class="bot-side">
+        <div class="card">
+          <span class="eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V3"/><circle cx="9" cy="13" r="1.2" fill="currentColor"/><circle cx="15" cy="13" r="1.2" fill="currentColor"/></svg> SUGESTÕES</span>
+          <button class="suggest">Como interpretar o mapa NDVI?</button>
+          <button class="suggest">Qual o melhor adubo para soja?</button>
+          <button class="suggest">Previsão de chuva esta semana</button>
+          <button class="suggest">Resumo dos alertas de hoje</button>
+        </div>
+        <div class="card bot-info">
+          <span class="eyebrow good"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20s1-9 9-13c5-2 7 0 7 0s2 9-6 13c-5 2.5-10 0-10 0z"/><path d="M9 15s2-3 6-5"/></svg> COMO FUNCIONA</span>
+          <p>O AgroBot cruza dados de satélite, clima e NDVI do seu talhão. <b>90% das respostas vêm de algoritmos determinísticos</b>; a IA só traduz para linguagem simples — custo baixo.</p>
+          <div class="src-row"><span class="src">Sentinel-2</span><span class="src">NASA POWER</span><span class="src">CPTEC</span></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</section></div>
+</body>
+</html>
